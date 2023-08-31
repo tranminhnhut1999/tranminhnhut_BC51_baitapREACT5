@@ -1,6 +1,40 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  deleteUserAction,
+  setSelectedUserAction,
+} from "../store/actions/userAction";
 
-export default class UserManagement extends Component {
+class UserManagement extends Component {
+  state = {
+    keyord: "",
+  };
+  renderContent = () => {
+    return (
+      <>
+        <tr className="bg-light">
+          <td>1</td>
+          <td>Nguyễn Văn A</td>
+          <td>09381111111</td>
+          <td>nguyenvana@gmail.com</td>
+          <td>
+            <button className="btn btn-info mr-2">EDIT</button>
+            <button className="btn btn-danger">DELETE</button>
+          </td>
+        </tr>
+        <tr className="bg-light">
+          <td>2</td>
+          <td>Nguyễn Văn B</td>
+          <td>092822232232</td>
+          <td>nguyenvanb@gmail.com</td>
+          <td>
+            <button className="btn btn-info mr-2">EDIT</button>
+            <button className="btn btn-danger">DELETE</button>
+          </td>
+        </tr>
+      </>
+    );
+  };
   render() {
     return (
       <div className="card p-0 mt-3">
@@ -15,15 +49,6 @@ export default class UserManagement extends Component {
               />
             </div>
           </div>
-          {/* <div className="col-3 ml-auto">
-            <div className="form-group mb-0">
-              <select className="form-control">
-                <option>All</option>
-                <option>Client</option>
-                <option>Admin</option>
-              </select>
-            </div>
-          </div> */}
         </div>
         <div className="card-body">
           <table className="table bg-secondary">
@@ -36,31 +61,18 @@ export default class UserManagement extends Component {
                 <th></th>
               </tr>
             </thead>
-            <tbody>
-              <tr className="bg-light">
-                <td>1</td>
-                <td>Nguyễn Văn A</td>
-                <td>09381111111</td>
-                <td>nguyenvana@gmail.com</td>
-                <td>
-                  <button className="btn btn-info mr-2">EDIT</button>
-                  <button className="btn btn-danger">DELETE</button>
-                </td>
-              </tr>
-              <tr className="bg-light">
-                <td>2</td>
-                <td>Nguyễn Văn B</td>
-                <td>092822232232</td>
-                <td>nguyenvanb@gmail.com</td>
-                <td>
-                  <button className="btn btn-info mr-2">EDIT</button>
-                  <button className="btn btn-danger">DELETE</button>
-                </td>
-              </tr>
-            </tbody>
+            <tbody> {this.renderContent()}</tbody>
           </table>
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    // userlist: state.userReducer.userlist,
+  };
+};
+
+export default connect(mapStateToProps)(UserManagement);
