@@ -6,15 +6,22 @@ import {
 } from "../type/userType";
 
 const DEFAULT_STATE = {
-  userslist: [],
+  userList: [],
   selectedUser: null,
 };
+
+
+const stringify = localStorage.getItem("USER_LIST");
+
+if (stringify) {
+  DEFAULT_STATE.userList = JSON.parse(stringify);
+}
 
 export const userReducer = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
     case ADD_USER: {
-      actions.payload.id = Date.now();
-      state.userslist = [...state.userslist, action.payload];
+      state.userList = [...state.userList, action.payload];
+      localStorage.setItem("USER_LIST", JSON.stringify(state.userList));
       break;
     }
     case SET_SELECTED_USER: {
@@ -22,13 +29,13 @@ export const userReducer = (state = DEFAULT_STATE, action) => {
       break;
     }
     case UPDATE_USER: {
-      state.userslist = state.userslist.map((user) =>
+      state.userList = state.userList.map((user) =>
         user.id === action.payload.id ? action.payload : user
       );
       break;
     }
     case DELETE_USER: {
-      state.userslist = state.userslist.filter(
+      state.userList = state.userList.filter(
         (user) => user.id !== action.payload
       );
       break;

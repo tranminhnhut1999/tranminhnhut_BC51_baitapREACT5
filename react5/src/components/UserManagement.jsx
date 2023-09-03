@@ -7,33 +7,37 @@ import {
 
 class UserManagement extends Component {
   state = {
-    keyord: "",
+    keyWord: "",
   };
   renderContent = () => {
-    return (
-      <>
-        <tr className="bg-light">
-          <td>1</td>
-          <td>Nguyễn Văn A</td>
-          <td>09381111111</td>
-          <td>nguyenvana@gmail.com</td>
+    return this.props.userList.map((element, idx) => {
+      const className = idx % 2 === 0 ? "bg-light" : "";
+
+      return (
+        <tr key={element.id} className={className}>
+          <td>{idx + 1}</td>
+          <td>{element.fullName}</td>
+          <td>{element.number}</td>
+          <td>{element.email}</td>
           <td>
-            <button className="btn btn-info mr-2">EDIT</button>
-            <button className="btn btn-danger">DELETE</button>
+            <button
+              onClick={() =>
+                this.props.dispatch(setSelectedUserAction(element))
+              }
+              className="btn btn-info mr-2"
+            >
+              EDIT
+            </button>
+            <button
+              onClick={() => this.props.dispatch(deleteUserAction(element))}
+              className="btn btn-danger"
+            >
+              Delete
+            </button>
           </td>
         </tr>
-        <tr className="bg-light">
-          <td>2</td>
-          <td>Nguyễn Văn B</td>
-          <td>092822232232</td>
-          <td>nguyenvanb@gmail.com</td>
-          <td>
-            <button className="btn btn-info mr-2">EDIT</button>
-            <button className="btn btn-danger">DELETE</button>
-          </td>
-        </tr>
-      </>
-    );
+      );
+    });
   };
   render() {
     return (
@@ -71,7 +75,7 @@ class UserManagement extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    // userlist: state.userReducer.userlist,
+    userList: state.userReducer.userList,
   };
 };
 

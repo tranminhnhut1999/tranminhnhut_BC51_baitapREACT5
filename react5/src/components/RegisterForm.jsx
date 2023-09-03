@@ -3,12 +3,14 @@ import { connect } from "react-redux";
 import { addUserAction, updateUserAction } from "../store/actions/userAction";
 
 class RegisterForm extends Component {
-  usernameInputRef = createRef();
+  idInputRef = createRef();
+  fullNameInputRef = createRef();
+  numberInputRef = createRef();
   emailInputRef = createRef();
 
   state = {
     id: "",
-    fullname: "",
+    fullName: "",
     number: "",
     email: "",
   };
@@ -16,38 +18,85 @@ class RegisterForm extends Component {
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
+  //VALIDATE
+  validateRequired = (value, ref, mess) => {
+    if (value) {
+      ref.innerHTML = "";
+      return true;
+    }
+    ref.innerHTML = mess;
+    return false;
+  };
+  // CHECK ĐỊNH DẠNG VALIDATE
+  validateNumber = (value, ref, mess) => {
+    if (/^[0-9]+$/.test(value)) {
+      ref.innerHTML = "";
+
+      return true;
+    }
+    ref.innerHTML = mess;
+    return false;
+  };
+
+  validateEmail = (value, ref, message) => {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
+      ref.innerHTML = "";
+
+      return true;
+    }
+
+    ref.innerHTML = message;
+
+    return false;
+  };
 
   handleSubmit = (event) => {
     event.preventDefault();
-    // let isValid = true;
-    // isValid &= this.validateRequired(
-    //   this.state.id,
-    //   this.usernameInputRef.current,
-    //   "Username không được bỏ trống"
-    // );
-    // isValid &=
-    //   this.validateRequired(
-    //     this.state.email,
-    //     this.emailInputRef.current,
-    //     "Email không được bỏ trống"
-    //   ) &&
-    //   this.validateRequired(
-    //     this.state.email,
-    //     this.emailInputRef.current,
-    //     "Email không đúng định dạng"
-    //   );
-    // if (isValid) {
-    //   if (this.state.id) {
-    //     this.props.dispatch(updateUserAction(this.state));
-    //   } else {
-    //     this.props.dispatch(addUserAction(this.state));
-    //   }
-    // }
+    let isValid = true;
+    isValid &= this.validateRequired(
+      this.state.id,
+      this.idInputRef.current,
+      "Mã SV không được bỏ trống"
+    );
+    isValid &= this.validateRequired(
+      this.state.fullName,
+      this.fullNameInputRef.current,
+      "Username không được bỏ trống"
+    );
+    isValid &=
+      this.validateRequired(
+        this.state.number,
+        this.numberInputRef.current,
+        "Số điện thoại không được bỏ trống"
+      ) &&
+      this.validateNumber(
+        this.state.number,
+        this.numberInputRef.current,
+        "Số điện thoại phải là số"
+      );
+    isValid &=
+      this.validateRequired(
+        this.state.email,
+        this.emailInputRef.current,
+        "Email không được bỏ trống"
+      ) &&
+      this.validateEmail(
+        this.state.email,
+        this.emailInputRef.current,
+        "Email không đúng định dạng"
+      );
+    if (isValid) {
+      // if (this.state.id) {
+      //   this.props.dispatch(updateUserAction(this.state));
+      // } else {
+      this.props.dispatch(addUserAction(this.state));
+      // }
+    }
 
-    console.log(this.state);
+    //console.log(this.state);
   };
 
-  static getDervicedStateFromProps(nextProps, currentState) {
+  static getDerivedStateFromProps(nextProps, currentState) {
     if (
       nextProps.selectedUser &&
       nextProps.selectedUser.id !== currentState.id
@@ -74,20 +123,23 @@ class RegisterForm extends Component {
                     className="form-control"
                     name="id"
                   />
-                  <span className="text-danger"></span>
+                  <span ref={this.idInputRef} className="text-danger"></span>
                 </div>
               </div>
               <div className="col-6">
                 <div className="form-group">
                   <label>Họ Tên</label>
                   <input
-                    value={this.state.fullname}
+                    value={this.state.fullName}
                     onChange={this.handleChange}
                     type="text"
                     className="form-control"
-                    name="name"
+                    name="fullName"
                   />
-                  <span className="text-danger"></span>
+                  <span
+                    ref={this.fullNameInputRef}
+                    className="text-danger"
+                  ></span>
                 </div>
               </div>
               <div className="col-6">
@@ -100,7 +152,10 @@ class RegisterForm extends Component {
                     className="form-control"
                     name="number"
                   />
-                  <span className="text-danger"></span>
+                  <span
+                    ref={this.numberInputRef}
+                    className="text-danger"
+                  ></span>
                 </div>
               </div>
               <div className="col-6">
@@ -113,7 +168,7 @@ class RegisterForm extends Component {
                     className="form-control"
                     name="email"
                   />
-                  <span className="text-danger"></span>
+                  <span ref={this.emailInputRef} className="text-danger"></span>
                 </div>
               </div>
             </div>
@@ -127,8 +182,8 @@ class RegisterForm extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    // selectedUser: state.userReducer.selectedUser,
+    selectedUser: state.userReducer.selectedUser,
   };
 };
 
-export default connect(mapStateToProps)(RegisterForm);
+export default connect()(RegisterForm);
