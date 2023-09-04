@@ -9,13 +9,22 @@ class UserManagement extends Component {
   state = {
     keyWord: "",
   };
+
   renderContent = () => {
-    return this.props.userList.map((element, idx) => {
+    let data = this.props.userList.filter((element) => {
+      return (
+        element.fullName
+          .toLowerCase()
+          .indexOf(this.state.keyWord.toLowerCase()) !== -1
+      );
+    });
+
+    return data.map((element, idx) => {
       const className = idx % 2 === 0 ? "bg-light" : "";
 
       return (
         <tr key={element.id} className={className}>
-          <td>{idx + 1}</td>
+          <td>{element.id}</td>
           <td>{element.fullName}</td>
           <td>{element.number}</td>
           <td>{element.email}</td>
@@ -39,6 +48,10 @@ class UserManagement extends Component {
       );
     });
   };
+
+  handleChange = (e) => {
+    this.setState({ keyWord: e.target.value });
+  };
   render() {
     return (
       <div className="card p-0 mt-3">
@@ -47,6 +60,7 @@ class UserManagement extends Component {
           <div className="col-4">
             <div className="form-group mb-0">
               <input
+                onChange={this.handleChange}
                 type="text"
                 placeholder="Search by full name..."
                 className="form-control"

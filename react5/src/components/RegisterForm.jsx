@@ -52,12 +52,20 @@ class RegisterForm extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
+
     let isValid = true;
-    isValid &= this.validateRequired(
-      this.state.id,
-      this.idInputRef.current,
-      "Mã SV không được bỏ trống"
-    );
+
+    isValid &=
+      this.validateRequired(
+        this.state.id,
+        this.idInputRef.current,
+        "Mã SV không được bỏ trống"
+      ) &&
+      this.validateNumber(
+        this.state.id,
+        this.idInputRef.current,
+        "Mã SV không hợp lệ"
+      );
     isValid &= this.validateRequired(
       this.state.fullName,
       this.fullNameInputRef.current,
@@ -86,12 +94,19 @@ class RegisterForm extends Component {
         "Email không đúng định dạng"
       );
     if (isValid) {
-      // if (this.state.id) {
-      //   this.props.dispatch(updateUserAction(this.state));
-      // } else {
-      this.props.dispatch(addUserAction(this.state));
-      // }
+      if (this.state.date) {
+        this.props.dispatch(updateUserAction(this.state));
+      } else {
+        this.props.dispatch(addUserAction(this.state));
+      }
     }
+
+    this.setState({
+      id: "",
+      fullName: "",
+      number: "",
+      email: "",
+    });
 
     //console.log(this.state);
   };
@@ -103,6 +118,7 @@ class RegisterForm extends Component {
     ) {
       currentState = nextProps.selectedUser;
     }
+    return currentState;
   }
   render() {
     return (
@@ -172,7 +188,7 @@ class RegisterForm extends Component {
                 </div>
               </div>
             </div>
-            <button className="btn btn-success mr-2">Thêm Sinh Viên</button>
+            <button className="btn btn-success mr-2">SAVE</button>
           </form>
         </div>
       </div>
@@ -186,4 +202,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect()(RegisterForm);
+export default connect(mapStateToProps)(RegisterForm);
